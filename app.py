@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 app = Flask(__name__)
-    
+
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
@@ -12,7 +12,6 @@ def hello_world():
 def json():
     data = {"messenger":"Hello, World!"}
     return jsonify(data)
-
 
 @app.route('/json/<int:test_id>/')
 def json_with_id(test_id):
