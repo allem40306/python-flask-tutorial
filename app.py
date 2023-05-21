@@ -1,19 +1,31 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from sqlalchemy import text
-import configparser
-
-config = configparser.ConfigParser()
-config.read_file(open("dev.ini"))
-username = config.get('DATABASE', 'username')
-password = config.get('DATABASE', 'password')
-host = config.get('DATABASE', 'host')
-port = config.get('DATABASE', 'port')
-database = config.get('DATABASE', 'database')
+import config
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
+app.config.from_object(config)
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+class Teacher(db.Model):
+    __tablename__ = 'teacher'
+    name = db.Column(db.VARCHAR(30), primary_key = True)
+    email = db.Column(db.VARCHAR(30))
+    office = db.Column(db.VARCHAR(30))
+
+class ClassRoom(db.Model):
+    __tablename__ ='classroom'
+    id = db.Column(db.INT, primary_key = True)
+    floor = db.Column(db.INT)
+    capacity = db.Column(db.INT)
+
+class Course(db.Model):
+    __tablename__ = 'course'
+    name = db.Column(db.VARCHAR(30), primary_key = True)
+    teacher = db.Column(db.VARCHAR(30), db.ForeignKey("teacher.name"))
+    classRoom = db.Column(db.INT, db.ForeignKey("classroom.id"))
 
 @app.route("/")
 def hello_world():
@@ -28,7 +40,6 @@ def json():
 def json_with_id(test_id):
     data = {"id": test_id}
     return jsonify(data)
-
 
 @app.route('/table/')
 def show_table():
