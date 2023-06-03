@@ -53,10 +53,10 @@ def create():
 
 @app.route('/select')
 def select():
-    print(Course.__tablename__)
+    print(Course.__tablename__) # 可以輸出 Model 的 Metadata
     res1 = Course.query.filter_by(name = "Algorithm").first()
     print(f"Course: {res1.name, res1.teacher, res1.roomCode}")
-    print(f"teacher: {res1.teacherInfo.email, res1.teacherInfo.office}")
+    print(f"teacher: {res1.teacherInfo.email, res1.teacherInfo.office}")  # 輸出課程教師的相關資訊
     
     res2 = Teacher.query.all()
     for res in res2:
@@ -66,16 +66,26 @@ def select():
 
 @app.route('/update')
 def update():
-    query = Course.query.filter_by(name = "Algorithm").first()
-    query.roomCode = "CD321"
-    db.session.commit()
+    res = Course.query.filter_by(name = "Algorithm").first()
+    res.roomCode = "CD321"
 
+    res = Course.query.all()
+    for r in res:
+        r.roomCode = "CD322"
+    
+    db.session.commit()
+    
     return "OK Success"
 
 @app.route('/delete')
 def delete():
-    query = Course.query.filter_by(name = "Algorithm").first()
-    db.session.delete(query)
+    res = Course.query.filter_by(name = "Algorithm").first()
+    db.session.delete(res)
+    db.session.commit()
+
+    res = Course.query.all()
+    for r in res:
+        db.session.delete(r)
     db.session.commit()
 
     return "OK Success"
