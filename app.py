@@ -89,3 +89,8 @@ def delete():
     db.session.commit()
 
     return "OK Success"
+
+@app.route('/mockCourse')
+def mockCourse():
+    data = [{"name": "Data Structure", "teacher": "Sam", "roomCode": "CD321"}, {"name": "Algorithm", "teacher": "Ann", "roomCode": "CD322"}]
+    return jsonify(data)
